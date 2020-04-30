@@ -42,6 +42,9 @@ public class TestSuite extends TestSuiteIntf {
 		this.m_fileReader.expect('$');
 		this.m_fileReader.expect('I');
 		this.m_fileReader.expect('N');
+		this.m_fileReader.expect('\r');
+		this.m_fileReader.expect('\n');
+
 	}
 
 	@Override
@@ -50,6 +53,8 @@ public class TestSuite extends TestSuiteIntf {
 		this.m_fileReader.expect('O');
 		this.m_fileReader.expect('U');
 		this.m_fileReader.expect('T');
+		this.m_fileReader.expect('\r');
+		this.m_fileReader.expect('\n');
 
 	}
 
