@@ -44,11 +44,15 @@ public class NumberCalc implements NumberCalcIntf {
 		return number;
 	}
 
-	// unaryMinus: -? atomicExpr
+	// unaryMinus: -* atomicExpr
 	public int getUnaryMinus() throws Exception {
 		int number = 0;
-		if (this.fileReader.lookAheadChar() == '-') {
+		boolean negative = false;
+		while (this.fileReader.lookAheadChar() == '-') {
 			this.fileReader.advance();
+			negative = !negative;
+		}
+		if (negative) {
 			number = -getFactor();
 		} else {
 			number = getFactor();
