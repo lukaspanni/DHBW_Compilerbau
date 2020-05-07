@@ -48,8 +48,12 @@ public class Lexer implements LexerIntf {
 			return Type.INTEGER;
 		if (firstChar == '+')
 			return Type.PLUS;
+		if (firstChar == '-')
+			return Type.MINUS;
 		if (firstChar == '*')
 			return Type.MUL;
+		if (firstChar == '/')
+			return Type.DIV;
 		if (firstChar == '(')
 			return Type.RPAREN;
 		if (firstChar == ')')
