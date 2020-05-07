@@ -10,38 +10,64 @@ public class NumberCalc implements NumberCalcIntf {
 		this.numberReader = new NumberReader(this.fileReader);
 	}
 
+	// sum: product ("+" product)*
+	// diff: product ("-" product)*
 	@Override
 	public int getSum() throws Exception {
-		int sum, number2;
-		sum = getProduct();
-		while (this.fileReader.lookAheadChar() != 0 && this.fileReader.lookAheadChar() != '\r') {
-			this.fileReader.expect('+');
-			number2 = getProduct();
-			sum = sum + number2;
+		int number = getProduct();
+		while (this.fileReader.lookAheadChar() == '+' || this.fileReader.lookAheadChar() == '-') {
+			char op = this.fileReader.lookAheadChar();
+			this.fileReader.advance();
+			if (op == '+') {
+				number += getProduct();
+			} else {
+				number -= getProduct();
+			}
 		}
-		return sum;
+		return number;
 	}
 
+	// product: unaryMinus ("*" unaryMinus)*
+	// quotient: unaryMinus ("/" unaryMinus)*
 	@Override
 	public int getProduct() throws Exception {
-		int product, number2;
-		product = this.numberReader.getNumber();
-		while (this.fileReader.lookAheadChar() != 0 && this.fileReader.lookAheadChar() != '\r') {
-			try {
-				this.fileReader.expect('*');
-			} catch (Exception e) {
-				break;
+		int number = getUnaryMinus();
+		while (this.fileReader.lookAheadChar() == '*' || this.fileReader.lookAheadChar() == '/') {
+			char op = this.fileReader.lookAheadChar();
+			this.fileReader.advance();
+			if (op == '*') {
+				number *= getUnaryMinus();
+			} else {
+				number /= getUnaryMinus();
 			}
-			number2 = this.numberReader.getNumber();
-			product = product * number2;
 		}
-		return product;
+		return number;
 	}
 
+	// unaryMinus: -? atomicExpr
+	public int getUnaryMinus() throws Exception {
+		int number = 0;
+		if (this.fileReader.lookAheadChar() == '-') {
+			this.fileReader.advance();
+			number = -getFactor();
+		} else {
+			number = getFactor();
+		}
+		return number;
+	}
+
+	// atomicExpr: number | "(" sum ")"
 	@Override
 	public int getFactor() throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		int number = 0;
+		if (this.numberReader.isDigit(this.fileReader.lookAheadChar())) {
+			number = this.numberReader.getNumber();
+		} else {
+			this.fileReader.expect('(');
+			number = getSum();
+			this.fileReader.expect(')');
+		}
+		return number;
 	}
 
 }
