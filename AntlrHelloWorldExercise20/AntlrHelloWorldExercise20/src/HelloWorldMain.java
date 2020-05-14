@@ -1,6 +1,9 @@
 
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 public class HelloWorldMain {
 
@@ -21,7 +24,7 @@ public class HelloWorldMain {
 		// build tree walker
 		ParseTreeWalker walker = new ParseTreeWalker();
 		// visit tree
-		walker.walk(new HelloWorldPrintListener(), tree);
+		// walker.walk(new HelloWorldPrintListener(), tree);
 
 	}
 }

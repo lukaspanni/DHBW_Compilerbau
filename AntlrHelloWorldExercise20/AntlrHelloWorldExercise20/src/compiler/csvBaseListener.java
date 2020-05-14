@@ -1,27 +1,40 @@
-// Generated from .\HelloWorld.g4 by ANTLR 4.8
+// Generated from csv.g4 by ANTLR 4.8
+package compiler;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
- * This class provides an empty implementation of {@link HelloWorldListener},
+ * This class provides an empty implementation of {@link csvListener},
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-public class HelloWorldBaseListener implements HelloWorldListener {
+public class csvBaseListener implements csvListener {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGreeting(HelloWorldParser.GreetingContext ctx) { }
+	@Override public void enterFile(csvParser.FileContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGreeting(HelloWorldParser.GreetingContext ctx) { }
+	@Override public void exitFile(csvParser.FileContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLine(csvParser.LineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLine(csvParser.LineContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
