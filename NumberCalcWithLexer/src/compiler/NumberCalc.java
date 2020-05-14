@@ -64,9 +64,9 @@ public class NumberCalc implements NumberCalcIntf {
 			number = this.lexer.lookAheadToken().m_intValue;
 			this.lexer.advance();
 		} else {
-			this.lexer.expect(Type.RPAREN);
-			number = getSum();
 			this.lexer.expect(Type.LPAREN);
+			number = getSum();
+			this.lexer.expect(Type.RPAREN);
 		}
 		return number;
 	}

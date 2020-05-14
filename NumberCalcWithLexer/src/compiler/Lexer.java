@@ -55,9 +55,9 @@ public class Lexer implements LexerIntf {
 		if (firstChar == '/')
 			return Type.DIV;
 		if (firstChar == '(')
-			return Type.RPAREN;
-		if (firstChar == ')')
 			return Type.LPAREN;
+		if (firstChar == ')')
+			return Type.RPAREN;
 		if (firstChar == '=')
 			return Type.ASSIGN;
 		if (firstChar == 0)
