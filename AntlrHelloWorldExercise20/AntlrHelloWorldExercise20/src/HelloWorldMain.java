@@ -24,7 +24,7 @@ public class HelloWorldMain {
 		// build tree walker
 		ParseTreeWalker walker = new ParseTreeWalker();
 		// visit tree
-		// walker.walk(new HelloWorldPrintListener(), tree);
+		walker.walk(new HelloWorldPrintListener(), tree);
 
 	}
 }
