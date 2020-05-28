@@ -4,20 +4,25 @@ import java.util.HashMap;
 
 public class SymbolTable implements SymbolTableIntf {
 
-	private HashMap<String, Symbol> m_symbolMap;
-	
+	private HashMap<String, Symbol> symbolTable;
+
 	public SymbolTable() {
-		m_symbolMap = new HashMap<String, Symbol>();
+		this.symbolTable = new HashMap<String, Symbol>();
 	}
 
+	@Override
 	public Symbol createSymbol(String symbolName) {
-		Symbol symbol = new Symbol(symbolName, 0);
-		m_symbolMap.put(symbolName, symbol);
+		return this.createSymbol(symbolName, 0);
+	}
+
+	public Symbol createSymbol(String symbolName, int value) {
+		Symbol symbol = new Symbol(symbolName, value);
+		this.symbolTable.put(symbolName, symbol);
 		return symbol;
 	}
 
+	@Override
 	public Symbol getSymbol(String symbolName) {
-		Symbol symbol = m_symbolMap.get(symbolName);
-		return symbol;
+		return this.symbolTable.get(symbolName);
 	}
 }

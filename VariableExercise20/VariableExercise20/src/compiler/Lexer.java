@@ -3,86 +3,87 @@ package compiler;
 public class Lexer implements LexerIntf {
 	private FileReaderIntf m_reader;
 	private Token m_nextToken;
-	
+
 	public Lexer(FileReaderIntf reader) throws Exception {
-		m_reader = reader;
+		this.m_reader = reader;
 		advance();
 	}
-	
+
+	@Override
 	public Token lookAheadToken() {
-		return m_nextToken;
+		return this.m_nextToken;
 	}
 
+	@Override
 	public void advance() throws Exception {
-		Token.Type tokenType = getTokenType(m_reader.lookAheadChar());
-		m_nextToken = new Token();
-		m_nextToken.m_type = tokenType;
+		Token.Type tokenType = getTokenType(this.m_reader.lookAheadChar());
+		this.m_nextToken = new Token();
+		this.m_nextToken.m_type = tokenType;
 		if (tokenType == Token.Type.IDENT) {
 			String ident = getIdent();
-			m_nextToken.m_stringValue = ident;
+			this.m_nextToken.m_stringValue = ident;
 			if (ident.equals("PRINT")) {
-				m_nextToken.m_type = Token.Type.PRINT;
+				this.m_nextToken.m_type = Token.Type.PRINT;
 			}
 		} else if (tokenType == Token.Type.INTEGER) {
 			int number = getNumber();
-			m_nextToken.m_intValue = number;
+			this.m_nextToken.m_intValue = number;
 		} else {
-			m_reader.advance();
+			this.m_reader.advance();
 		}
-		while (isWhiteSpace(m_reader.lookAheadChar())) {
-			m_reader.advance();
+		while (isWhiteSpace(this.m_reader.lookAheadChar())) {
+			this.m_reader.advance();
 		}
 	}
-	
+
+	@Override
 	public void expect(Token.Type tokenType) throws Exception {
-		if (tokenType == m_nextToken.m_type) {
+		if (tokenType == this.m_nextToken.m_type) {
 			advance();
-		} else {
-			throw new ParserException("Unexpected Token: ", m_nextToken.toString(), getCurrentLocationMsg(), Token.type2String(tokenType));
-		}
+		} else
+			throw new ParserException("Unexpected Token: ", this.m_nextToken.toString(), getCurrentLocationMsg(), Token.type2String(tokenType));
 	}
-	
+
+	@Override
 	public Token.Type getTokenType(char firstChar) throws Exception {
-		if (firstChar == 0) {
+		if (firstChar == 0)
 			return Token.Type.EOF;
-		} else if ('a' <= firstChar && firstChar <= 'z') {
+		else if (isIdentifierPart(firstChar))
 			return Token.Type.IDENT;
-		} else if ('A' <= firstChar && firstChar <= 'Z') {
-			return Token.Type.IDENT;
-		} else if ('0' <= firstChar && firstChar <= '9') {
+		else if ('0' <= firstChar && firstChar <= '9')
 			return Token.Type.INTEGER;
-		} else if (firstChar == '+') {
+		else if (firstChar == '+')
 			return Token.Type.PLUS;
-		} else if (firstChar == '-') {
+		else if (firstChar == '-')
 			return Token.Type.MINUS;
-		} else if (firstChar == '*') {
+		else if (firstChar == '*')
 			return Token.Type.MUL;
-		} else if (firstChar == '/') {
+		else if (firstChar == '/')
 			return Token.Type.DIV;
-		} else if (firstChar == '(') {
+		else if (firstChar == '(')
 			return Token.Type.LPAREN;
-		} else if (firstChar == ')') {
+		else if (firstChar == ')')
 			return Token.Type.RPAREN;
-		} else if (firstChar == '=') {
+		else if (firstChar == '=')
 			return Token.Type.ASSIGN;
-		} else if (firstChar == ';') {
+		else if (firstChar == ';')
 			return Token.Type.SEMICOL;
-		} else {
-			throw new ParserException("Unexpected character: ", Character.toString(firstChar), m_reader.getCurrentLocationMsg(), "");
-		}
+		else
+			throw new ParserException("Unexpected character: ", Character.toString(firstChar), this.m_reader.getCurrentLocationMsg(), "");
 	}
 
 	private String getIdent() throws Exception {
 		String ident = "";
-		char nextChar = m_reader.lookAheadChar();
+		char nextChar = this.m_reader.lookAheadChar();
 		do  {
 			ident += nextChar;
-			m_reader.advance();
-			nextChar = m_reader.lookAheadChar();
+			this.m_reader.advance();
+			nextChar = this.m_reader.lookAheadChar();
 		} while (isIdentifierPart(nextChar));
 		return ident;
 	}
 
+	@Override
 	public boolean isIdentifierPart(char c) {
 		boolean isPart = ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
 		return isPart;
@@ -90,25 +91,28 @@ public class Lexer implements LexerIntf {
 
 	private int getNumber() throws Exception {
 		int number = 0;
-		char nextChar = m_reader.lookAheadChar();
+		char nextChar = this.m_reader.lookAheadChar();
 		do {
 			number *= 10;
-			number += (int)(nextChar - '0');
-			m_reader.advance();
-			nextChar = m_reader.lookAheadChar();
+			number += nextChar - '0';
+			this.m_reader.advance();
+			nextChar = this.m_reader.lookAheadChar();
 		} while (isDigit(nextChar));
 		return number;
 	}
 
+	@Override
 	public boolean isDigit(char c) {
 		return ('0' <= c && c <= '9');
 	}
 
+	@Override
 	public boolean isWhiteSpace(char c) {
 		return (c == ' ' || c == '\n' || c == '\r' || c == '\t');
 	}
 
+	@Override
 	public String getCurrentLocationMsg() {
-		return m_reader.getCurrentLocationMsg();
+		return this.m_reader.getCurrentLocationMsg();
 	}
 }

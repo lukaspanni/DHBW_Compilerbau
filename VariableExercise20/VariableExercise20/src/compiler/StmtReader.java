@@ -4,51 +4,54 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 public class StmtReader implements StmtReaderIntf {
-	private SymbolTable m_symbolTable;
-	private LexerIntf m_lexer;
-    private ExprReader m_exprReader;
-    private OutputStreamWriter m_outStream;
+	private SymbolTable symbolTbl;
+	private LexerIntf lexer;
+	private ExprReader exprReader;
+	private OutputStreamWriter outStream;
 
 	public StmtReader(LexerIntf lexer, OutputStream outStream) throws Exception {
-		m_symbolTable = new SymbolTable();
-		m_lexer = lexer;
-		m_exprReader = new ExprReader(m_symbolTable, m_lexer);
-		m_outStream = new OutputStreamWriter(outStream, "UTF-8");
-	}
-	
-	public void getStmtList() throws Exception {
-		while (m_lexer.lookAheadToken().m_type != Token.Type.EOF) {
-			getStmt();
-		}
-		m_outStream.flush();
+		this.symbolTbl = new SymbolTable();
+		this.lexer = lexer;
+		this.exprReader = new ExprReader(this.symbolTbl, this.lexer);
+		this.outStream = new OutputStreamWriter(outStream, "UTF-8");
 	}
 
+	@Override
+	public void getStmtList() throws Exception {
+		while (this.lexer.lookAheadToken().m_type != Token.Type.EOF) {
+			getStmt();
+		}
+		this.outStream.flush();
+	}
+
+	@Override
 	public void getStmt() throws Exception {
-		Token token = m_lexer.lookAheadToken();
+		Token token = this.lexer.lookAheadToken();
 		if (token.m_type == Token.Type.IDENT) {
 			getAssign();
 		} else if (token.m_type == Token.Type.PRINT) {
 			getPrint();
 		}
 	}
-	
+
+	@Override
 	public void getAssign() throws Exception {
-		Token token = m_lexer.lookAheadToken();
-		String varName = token.m_stringValue;
-		m_lexer.advance();
-		m_lexer.expect(Token.Type.ASSIGN);
-		int number = m_exprReader.getExpr();
-		Symbol var = m_symbolTable.createSymbol(varName);
-		var.m_number = number;
-		m_lexer.expect(Token.Type.SEMICOL);
+		Token token = this.lexer.lookAheadToken();
+		String name = token.m_stringValue;
+		this.lexer.advance();
+		this.lexer.expect(Token.Type.ASSIGN);
+		int value = this.exprReader.getExpr();
+		Symbol var = this.symbolTbl.createSymbol(name, value);
+		this.lexer.expect(Token.Type.SEMICOL);
 	}
 
+	@Override
 	public void getPrint() throws Exception {
-		m_lexer.advance(); // PRINT
-		int number = m_exprReader.getExpr();
-		m_outStream.write(Integer.toString(number));
-		m_outStream.write('\n');
-		m_lexer.expect(Token.Type.SEMICOL);
+		this.lexer.expect(Token.Type.PRINT);
+		int value = this.exprReader.getExpr();
+		this.outStream.write(Integer.toString(value));
+		this.outStream.write('\n');
+		this.lexer.expect(Token.Type.SEMICOL);
 	}
 
 
