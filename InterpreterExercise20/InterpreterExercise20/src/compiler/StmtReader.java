@@ -42,7 +42,8 @@ public class StmtReader implements StmtReaderIntf {
 		this.m_exprReader.getExpr();
 		Symbol var = this.m_symbolTable.getOrCreateSymbol(varName);
 		this.m_lexer.expect(Token.Type.SEMICOL);
-		// create instruction - assignInstruction
+		InstrIntf assignInstr = new Instr.AssignInstr(varName);
+		this.m_compileEnv.addInstr(assignInstr);
 	}
 
 	@Override
@@ -50,7 +51,8 @@ public class StmtReader implements StmtReaderIntf {
 		this.m_lexer.expect(Token.Type.PRINT);
 		this.m_exprReader.getExpr();
 		this.m_lexer.expect(Token.Type.SEMICOL);
-		// create instruction - printInstruction
+		InstrIntf printInstr = new Instr.PrintInstr();
+		this.m_compileEnv.addInstr(printInstr);
 	}
 
 	@Override

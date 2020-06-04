@@ -20,6 +20,8 @@ public class ExprReader extends ExprReaderIntf {
 		} else if (token.m_type == Token.Type.IDENT) {
 			this.m_lexer.advance();
 			Symbol var = this.m_symbolTable.getSymbol(token.m_stringValue);
+			if(var == null)
+				throw new Exception("Undefined Variable");
 			number = var.m_number;
 		} else
 			throw new ParserException("Unexpected Token: ", token.toString(), this.m_lexer.getCurrentLocationMsg(), "numerical expression");

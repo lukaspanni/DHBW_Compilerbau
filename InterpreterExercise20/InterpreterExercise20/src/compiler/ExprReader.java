@@ -5,63 +5,78 @@ public class ExprReader extends ExprReaderIntf {
 	public ExprReader(SymbolTable symbolTable, LexerIntf lexer, CompileEnvIntf compileEnv) throws Exception {
 		super(symbolTable, lexer, compileEnv);
 	}
-	
+
+	@Override
 	public void getAtomicExpr() throws Exception {
-		Token token = m_lexer.lookAheadToken(); 
+		Token token = this.m_lexer.lookAheadToken();
 		if (token.m_type == Token.Type.INTEGER) {
-			m_lexer.advance();
-			// create instruction
+			this.m_lexer.advance();
+			InstrIntf numberInstr = new Instr.PushNumberInstr(token.m_intValue);
+			this.m_compileEnv.addInstr(numberInstr);
 		} else if (token.m_type == Token.Type.LPAREN) {
-			m_lexer.advance();
+			this.m_lexer.advance();
 			getExpr();
-			m_lexer.expect(Token.Type.RPAREN);
+			this.m_lexer.expect(Token.Type.RPAREN);
 		} else if (token.m_type == Token.Type.IDENT) {
-			m_lexer.advance();
-			// create instruction
-		} else {
-			throw new ParserException("Unexpected Token: ", token.toString(), m_lexer.getCurrentLocationMsg(), "numerical expression");
-		}
+			this.m_lexer.advance();
+			InstrIntf variableInstr = new Instr.VariableInstruction(token.m_stringValue);
+			this.m_compileEnv.addInstr(variableInstr);
+		} else
+			throw new ParserException("Unexpected Token: ", token.toString(), this.m_lexer.getCurrentLocationMsg(),
+					"numerical expression");
 	}
-	
+
+	@Override
 	public void getUnaryExpr() throws Exception {
-		Token token = m_lexer.lookAheadToken(); 
-		getAtomicExpr();
+		Token token = this.m_lexer.lookAheadToken();
+		boolean neg = false;
 		while (token.m_type == Token.Type.MINUS) {
-			m_lexer.advance();
-			// create instruction
-			token = m_lexer.lookAheadToken();
+			this.m_lexer.advance();
+			neg = !neg;
+			token = this.m_lexer.lookAheadToken();
+		}
+		getAtomicExpr();
+		if (neg) {
+			InstrIntf unaryMinusInstr = new Instr.unaryMinusInstr();
+			this.m_compileEnv.addInstr(unaryMinusInstr);
 		}
 	}
 
+	@Override
 	public void getProduct() throws Exception {
 		getUnaryExpr();
-		Token token = m_lexer.lookAheadToken(); 
+		Token token = this.m_lexer.lookAheadToken();
 		while (token.m_type == Token.Type.MUL || token.m_type == Token.Type.DIV) {
-			m_lexer.advance();
+			this.m_lexer.advance();
 			if (token.m_type == Token.Type.MUL) {
 				getUnaryExpr();
-				// create instruction
+				InstrIntf mulInstr = new Instr.MulInstr();
+				this.m_compileEnv.addInstr(mulInstr);
 			} else {
 				getUnaryExpr();
-				// create instruction
+				InstrIntf divInstr = new Instr.DivInstr();
+				this.m_compileEnv.addInstr(divInstr);
 			}
-			token = m_lexer.lookAheadToken(); 
+			token = this.m_lexer.lookAheadToken();
 		}
 	}
 
+	@Override
 	public void getExpr() throws Exception {
 		getProduct();
-		Token token = m_lexer.lookAheadToken(); 
+		Token token = this.m_lexer.lookAheadToken();
 		while (token.m_type == Token.Type.PLUS || token.m_type == Token.Type.MINUS) {
-			m_lexer.advance();
+			this.m_lexer.advance();
 			if (token.m_type == Token.Type.PLUS) {
 				getProduct();
-				// create instruction
+				InstrIntf addInstr = new Instr.AddInstr();
+				this.m_compileEnv.addInstr(addInstr);
 			} else {
 				getProduct();
-				// create instruction
+				InstrIntf subInstr = new Instr.SubInstr();
+				this.m_compileEnv.addInstr(subInstr);
 			}
-			token = m_lexer.lookAheadToken(); 
+			token = this.m_lexer.lookAheadToken();
 		}
 	}
 
