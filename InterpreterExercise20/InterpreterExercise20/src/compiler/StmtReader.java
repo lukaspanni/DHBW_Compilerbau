@@ -29,8 +29,41 @@ public class StmtReader implements StmtReaderIntf {
 			getPrint();
 		} else if (token.m_type == Token.Type.LBRACE) {
 			getBlockStmt();
+		} else if (token.m_type == Token.Type.WHILE) {
+			getWhile();
 		} else
 			throw new ParserException("Unexpected Token: ", token.toString(), this.m_lexer.getCurrentLocationMsg(), "begin of statement");
+	}
+
+	private void getWhile() throws Exception {
+		this.m_lexer.expect(Token.Type.WHILE);
+		InstrBlock headBlock = this.m_compileEnv.createBlock();
+		InstrBlock whileBlock = this.m_compileEnv.createBlock();
+		InstrBlock exitBlock = this.m_compileEnv.createBlock();
+		InstrIntf jumpHead = new Instr.Jump(headBlock);
+		this.m_compileEnv.addInstr(jumpHead);
+		this.m_compileEnv.setCurrentBlock(headBlock);
+		getWhileHead(headBlock, whileBlock, exitBlock);
+		this.m_compileEnv.setCurrentBlock(whileBlock);
+		getWhileBlock(whileBlock, headBlock);
+		this.m_compileEnv.setCurrentBlock(exitBlock);
+	}
+
+	private void getWhileHead(InstrBlock headBlock, InstrBlock whileBlock, InstrBlock exitBlock) throws Exception {
+		this.m_lexer.expect(Token.Type.LPAREN);
+		this.m_exprReader.getExpr();
+		InstrIntf conditionalJump = new Instr.ConditionalJumpInstruction(whileBlock, exitBlock);
+		this.m_compileEnv.addInstr(conditionalJump);
+		this.m_lexer.expect(Token.Type.RPAREN);
+	}
+
+	private void getWhileBlock(InstrBlock whileBlock, InstrBlock headBlock) throws Exception {
+		this.m_lexer.expect(Token.Type.LBRACE);
+		getStmtList();
+		InstrIntf jump = new Instr.Jump(headBlock);
+		this.m_compileEnv.addInstr(jump);
+		this.m_lexer.expect(Token.Type.RBRACE);
+
 	}
 
 	@Override

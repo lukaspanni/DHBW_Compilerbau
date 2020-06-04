@@ -2,7 +2,7 @@
   a = 1;
   b = 1;
   n = 0;
-  WHILE (n - 10) {
+  WHILE (n < 10) {
     PRINT a;
     newB = a + b;
     a = b;

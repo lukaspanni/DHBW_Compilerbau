@@ -7,15 +7,15 @@ public class InstrBlock {
 	private ArrayList<InstrIntf> m_instrList;
 
 	public InstrBlock() {
-		m_instrList = new ArrayList<InstrIntf>();
+		this.m_instrList = new ArrayList<InstrIntf>();
 	}
 	
 	public void addInstr(InstrIntf instr) {
-		m_instrList.add(instr);
+		this.m_instrList.add(instr);
 	}
 	
 	public Iterator<InstrIntf> getIterator() {
-		return m_instrList.listIterator();
+		return this.m_instrList.listIterator();
 	}
 	
 }

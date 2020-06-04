@@ -4,6 +4,53 @@ import java.io.OutputStreamWriter;
 
 public abstract class Instr implements InstrIntf {
 
+	public static class Jump implements InstrIntf {
+
+		private InstrBlock target;
+
+		public Jump(InstrBlock target) {
+			this.target = target;
+		}
+
+		@Override
+		public void execute(ExecutionEnvIntf env) {
+			env.setInstrIter(this.target.getIterator());
+		}
+
+		@Override
+		public void trace(OutputStreamWriter os) throws Exception {
+
+		}
+
+	}
+
+	public static class ConditionalJumpInstruction implements InstrIntf {
+
+		private InstrBlock trueBlock;
+		private InstrBlock falseBlock;
+
+		public ConditionalJumpInstruction(InstrBlock trueBlock, InstrBlock falseBlock) {
+			this.trueBlock = trueBlock;
+			this.falseBlock = falseBlock;
+		}
+
+		@Override
+		public void execute(ExecutionEnvIntf env) {
+			int condition = env.popNumber();
+			if (condition == 0) {
+				env.setInstrIter(this.falseBlock.getIterator());
+			} else {
+				env.setInstrIter(this.trueBlock.getIterator());
+			}
+		}
+
+		@Override
+		public void trace(OutputStreamWriter os) throws Exception {
+
+		}
+
+	}
+
 	public static class unaryMinusInstr implements InstrIntf {
 
 		@Override
