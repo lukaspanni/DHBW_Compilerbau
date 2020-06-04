@@ -31,25 +31,42 @@ public class StmtReader implements StmtReaderIntf {
 			getBlockStmt();
 		} else if (token.m_type == Token.Type.WHILE) {
 			getWhile();
+		} else if (token.m_type == Token.Type.DO) {
+			getDoWhile();
 		} else
 			throw new ParserException("Unexpected Token: ", token.toString(), this.m_lexer.getCurrentLocationMsg(), "begin of statement");
+	}
+
+	private void getDoWhile() throws Exception {
+		this.m_lexer.expect(Token.Type.DO);
+		InstrBlock stmtBlock = this.m_compileEnv.createBlock();
+		InstrBlock condBlock = this.m_compileEnv.createBlock();
+		InstrBlock exitBlock = this.m_compileEnv.createBlock();
+		InstrIntf jumpStmt = new Instr.Jump(stmtBlock);
+		this.m_compileEnv.addInstr(jumpStmt);
+		this.m_compileEnv.setCurrentBlock(stmtBlock);
+		getWhileBlock(condBlock);
+		this.m_compileEnv.setCurrentBlock(condBlock);
+		this.m_lexer.expect(Token.Type.WHILE);
+		getWhileCondition(stmtBlock, exitBlock);
+		this.m_compileEnv.setCurrentBlock(exitBlock);
 	}
 
 	private void getWhile() throws Exception {
 		this.m_lexer.expect(Token.Type.WHILE);
 		InstrBlock headBlock = this.m_compileEnv.createBlock();
-		InstrBlock whileBlock = this.m_compileEnv.createBlock();
+		InstrBlock stmtBlock = this.m_compileEnv.createBlock();
 		InstrBlock exitBlock = this.m_compileEnv.createBlock();
 		InstrIntf jumpHead = new Instr.Jump(headBlock);
 		this.m_compileEnv.addInstr(jumpHead);
 		this.m_compileEnv.setCurrentBlock(headBlock);
-		getWhileHead(headBlock, whileBlock, exitBlock);
-		this.m_compileEnv.setCurrentBlock(whileBlock);
-		getWhileBlock(whileBlock, headBlock);
+		getWhileCondition(stmtBlock, exitBlock);
+		this.m_compileEnv.setCurrentBlock(stmtBlock);
+		getWhileBlock(headBlock);
 		this.m_compileEnv.setCurrentBlock(exitBlock);
 	}
 
-	private void getWhileHead(InstrBlock headBlock, InstrBlock whileBlock, InstrBlock exitBlock) throws Exception {
+	private void getWhileCondition(InstrBlock whileBlock, InstrBlock exitBlock) throws Exception {
 		this.m_lexer.expect(Token.Type.LPAREN);
 		this.m_exprReader.getExpr();
 		InstrIntf conditionalJump = new Instr.ConditionalJumpInstruction(whileBlock, exitBlock);
@@ -57,13 +74,10 @@ public class StmtReader implements StmtReaderIntf {
 		this.m_lexer.expect(Token.Type.RPAREN);
 	}
 
-	private void getWhileBlock(InstrBlock whileBlock, InstrBlock headBlock) throws Exception {
-		this.m_lexer.expect(Token.Type.LBRACE);
-		getStmtList();
-		InstrIntf jump = new Instr.Jump(headBlock);
+	private void getWhileBlock(InstrBlock condBlock) throws Exception {
+		getBlockStmt();
+		InstrIntf jump = new Instr.Jump(condBlock);
 		this.m_compileEnv.addInstr(jump);
-		this.m_lexer.expect(Token.Type.RBRACE);
-
 	}
 
 	@Override

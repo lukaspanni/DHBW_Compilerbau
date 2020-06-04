@@ -1,12 +1,23 @@
 {
   a = 1;
-  b = 1;
-  n = 0;
-  WHILE (n - 10) {
-    PRINT a;
-    newB = a + b;
-    a = b;
-    b = newB;
-    n = n + 1;
+  DO {
+  	a = a-1;
+  	PRINT a;
+  }WHILE(a+1)
+
+  c = 0;
+  WHILE(c - 2){
+	  a = 1;
+	  b = 1;
+	  n = 0;
+	  WHILE (n - 10) {
+	    PRINT a;
+	    newB = a + b;
+	    a = b;
+	    b = newB;
+	    n = n + 1;
+	  }
+  c = c+1;
   }
+ 
 }
