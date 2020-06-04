@@ -41,7 +41,7 @@ public class StmtReader implements StmtReaderIntf {
 		this.lexer.advance();
 		this.lexer.expect(Token.Type.ASSIGN);
 		int value = this.exprReader.getExpr();
-		Symbol var = this.symbolTbl.createSymbol(name, value);
+		this.symbolTbl.createSymbol(name, value);
 		this.lexer.expect(Token.Type.SEMICOL);
 	}
 
