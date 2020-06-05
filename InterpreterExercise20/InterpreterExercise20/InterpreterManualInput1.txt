@@ -1,23 +1,33 @@
 {
-  a = 1;
+  a = 42;
   DO {
-  	a = a-1;
+  	a = a/2;
   	PRINT a;
-  }WHILE(a+1)
+  }WHILE(a)
 
-  c = 0;
-  WHILE(c - 2){
-	  a = 1;
-	  b = 1;
-	  n = 0;
-	  WHILE (n - 10) {
-	    PRINT a;
-	    newB = a + b;
-	    a = b;
-	    b = newB;
-	    n = n + 1;
-	  }
-  c = c+1;
+  a = 1;
+  b = 1;
+  n = 0;
+  WHILE (n - 10) {
+    PRINT a;
+    newB = a + b;
+    a = b;
+    b = newB;
+    n = n + 1;
+  }
+
+  PRINT 1111111111;
+  c = 1;
+  WHILE(c - 64){
+  	c = c*2;
+  	y = c;
+  	z = 0;
+  	WHILE(y){
+      y = y / 2;
+      z = z+1;
+  	}
+  	PRINT z;
+  	PRINT c;
   }
  
 }

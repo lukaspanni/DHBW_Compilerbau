@@ -4,11 +4,11 @@ import java.io.OutputStreamWriter;
 
 public abstract class Instr implements InstrIntf {
 
-	public static class Jump implements InstrIntf {
+	public static class JumpInstr implements InstrIntf {
 
 		private InstrBlock target;
 
-		public Jump(InstrBlock target) {
+		public JumpInstr(InstrBlock target) {
 			this.target = target;
 		}
 

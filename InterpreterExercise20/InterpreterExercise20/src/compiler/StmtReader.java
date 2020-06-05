@@ -27,6 +27,8 @@ public class StmtReader implements StmtReaderIntf {
 			getAssign();
 		} else if (token.m_type == Token.Type.PRINT) {
 			getPrint();
+		} else if (token.m_type == Token.Type.IF) {
+			getIfStmt();
 		} else if (token.m_type == Token.Type.LBRACE) {
 			getBlockStmt();
 		} else if (token.m_type == Token.Type.WHILE) {
@@ -42,7 +44,7 @@ public class StmtReader implements StmtReaderIntf {
 		InstrBlock stmtBlock = this.m_compileEnv.createBlock();
 		InstrBlock condBlock = this.m_compileEnv.createBlock();
 		InstrBlock exitBlock = this.m_compileEnv.createBlock();
-		InstrIntf jumpStmt = new Instr.Jump(stmtBlock);
+		InstrIntf jumpStmt = new Instr.JumpInstr(stmtBlock);
 		this.m_compileEnv.addInstr(jumpStmt);
 		this.m_compileEnv.setCurrentBlock(stmtBlock);
 		getWhileBlock(condBlock);
@@ -57,7 +59,7 @@ public class StmtReader implements StmtReaderIntf {
 		InstrBlock headBlock = this.m_compileEnv.createBlock();
 		InstrBlock stmtBlock = this.m_compileEnv.createBlock();
 		InstrBlock exitBlock = this.m_compileEnv.createBlock();
-		InstrIntf jumpHead = new Instr.Jump(headBlock);
+		InstrIntf jumpHead = new Instr.JumpInstr(headBlock);
 		this.m_compileEnv.addInstr(jumpHead);
 		this.m_compileEnv.setCurrentBlock(headBlock);
 		getWhileCondition(stmtBlock, exitBlock);
@@ -76,8 +78,27 @@ public class StmtReader implements StmtReaderIntf {
 
 	private void getWhileBlock(InstrBlock condBlock) throws Exception {
 		getBlockStmt();
-		InstrIntf jump = new Instr.Jump(condBlock);
+		InstrIntf jump = new Instr.JumpInstr(condBlock);
 		this.m_compileEnv.addInstr(jump);
+	}
+
+	public void getIfStmt() throws Exception {
+		InstrBlock ifHeadBlock = this.m_compileEnv.createBlock();
+		InstrBlock thenBlock = this.m_compileEnv.createBlock();
+		InstrBlock exitBlock = this.m_compileEnv.createBlock();
+		this.m_lexer.expect(Token.Type.IF);
+		this.m_lexer.expect(Token.Type.LPAREN);
+		InstrIntf jmpHeadInstr = new Instr.JumpInstr(ifHeadBlock);
+		this.m_compileEnv.addInstr(jmpHeadInstr);
+		this.m_compileEnv.setCurrentBlock(ifHeadBlock);
+		this.m_exprReader.getExpr();
+		InstrIntf jmpIfCondInstr = new Instr.ConditionalJumpInstruction(thenBlock, exitBlock);
+		this.m_compileEnv.addInstr(jmpIfCondInstr);
+		this.m_lexer.expect(Token.Type.RPAREN);
+		this.m_compileEnv.setCurrentBlock(thenBlock);
+		getBlockStmt();
+		InstrIntf jmpExitInstr = new Instr.JumpInstr(exitBlock);
+		this.m_compileEnv.setCurrentBlock(exitBlock);
 	}
 
 	@Override
