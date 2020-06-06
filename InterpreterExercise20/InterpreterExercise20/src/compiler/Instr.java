@@ -1,5 +1,6 @@
 package compiler;
 
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 public abstract class Instr implements InstrIntf {
@@ -139,7 +140,13 @@ public abstract class Instr implements InstrIntf {
 
 		@Override
 		public void execute(ExecutionEnvIntf env) {
-			System.out.println(env.popNumber());
+			try {
+				env.getOutputStream().write(String.valueOf(env.popNumber()) + "\n");
+				env.getOutputStream().flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		@Override

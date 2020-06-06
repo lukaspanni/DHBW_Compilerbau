@@ -52,6 +52,7 @@ public class StmtReader implements StmtReaderIntf {
 		this.m_lexer.expect(Token.Type.WHILE);
 		getWhileCondition(stmtBlock, exitBlock);
 		this.m_compileEnv.setCurrentBlock(exitBlock);
+		this.m_lexer.expect(Token.Type.SEMICOL);
 	}
 
 	private void getWhile() throws Exception {
