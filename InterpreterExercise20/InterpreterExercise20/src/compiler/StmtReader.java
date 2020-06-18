@@ -15,7 +15,8 @@ public class StmtReader implements StmtReaderIntf {
 
 	@Override
 	public void getStmtList() throws Exception {
-		while (this.m_lexer.lookAheadToken().m_type != Token.Type.EOF && this.m_lexer.lookAheadToken().m_type != Token.Type.RBRACE) {
+		while (this.m_lexer.lookAheadToken().m_type != Token.Type.EOF
+				&& this.m_lexer.lookAheadToken().m_type != Token.Type.RBRACE) {
 			getStmt();
 		}
 	}
@@ -36,9 +37,11 @@ public class StmtReader implements StmtReaderIntf {
 		} else if (token.m_type == Token.Type.DO) {
 			getDoWhile();
 		} else
-			throw new ParserException("Unexpected Token: ", token.toString(), this.m_lexer.getCurrentLocationMsg(), "begin of statement");
+			throw new ParserException("Unexpected Token: ", token.toString(), this.m_lexer.getCurrentLocationMsg(),
+					"begin of statement");
 	}
 
+	// doWhileStmt: DO whileBlock WHILE whileCondition SEMICOL
 	private void getDoWhile() throws Exception {
 		this.m_lexer.expect(Token.Type.DO);
 		InstrBlock stmtBlock = this.m_compileEnv.createBlock();
@@ -55,6 +58,7 @@ public class StmtReader implements StmtReaderIntf {
 		this.m_lexer.expect(Token.Type.SEMICOL);
 	}
 
+	// whilStmt: WHILE whileCondition whileBlock
 	private void getWhile() throws Exception {
 		this.m_lexer.expect(Token.Type.WHILE);
 		InstrBlock headBlock = this.m_compileEnv.createBlock();
@@ -69,6 +73,7 @@ public class StmtReader implements StmtReaderIntf {
 		this.m_compileEnv.setCurrentBlock(exitBlock);
 	}
 
+	// whileCondition: "("expr")"
 	private void getWhileCondition(InstrBlock whileBlock, InstrBlock exitBlock) throws Exception {
 		this.m_lexer.expect(Token.Type.LPAREN);
 		this.m_exprReader.getExpr();
@@ -77,6 +82,7 @@ public class StmtReader implements StmtReaderIntf {
 		this.m_lexer.expect(Token.Type.RPAREN);
 	}
 
+	// whileBlock = blockStmt
 	private void getWhileBlock(InstrBlock condBlock) throws Exception {
 		getBlockStmt();
 		InstrIntf jump = new Instr.JumpInstr(condBlock);
@@ -130,7 +136,5 @@ public class StmtReader implements StmtReaderIntf {
 		getStmtList();
 		this.m_lexer.expect(Token.Type.RBRACE);
 	}
-
-
 
 }
