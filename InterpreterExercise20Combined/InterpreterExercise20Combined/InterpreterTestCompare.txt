@@ -1,0 +1,37 @@
+$IN
+{
+  x = 4 < 7;
+  PRINT x;
+}
+$OUT
+1
+$IN
+{
+  a = 3;
+  b = 4;
+  x = a == b;
+  PRINT x;
+}
+$OUT
+0
+$IN
+{
+  x = 3 < 2+2;
+  PRINT x;
+}
+$OUT
+1
+$IN
+{
+  x = 1 && (1 || 0);
+  PRINT x;
+}
+$OUT
+1
+$IN
+{
+  x = 3 > 4 && 1;
+  PRINT x;
+}
+$OUT
+0

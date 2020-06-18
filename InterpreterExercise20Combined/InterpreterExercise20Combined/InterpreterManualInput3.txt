@@ -1,0 +1,9 @@
+{
+  PRINT 2;
+  FUNCTION fct(a, b) {
+    PRINT a;
+    PRINT b;
+  }
+  CALL fct(4, 6);
+  CALL fct(10, 12);
+}

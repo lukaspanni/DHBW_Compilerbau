@@ -1,0 +1,44 @@
+$IN
+{
+  FUNCTION fct() {
+    PRINT 10;
+  }
+  CALL fct();
+  CALL fct();
+}
+$OUT
+10
+10
+$IN
+{
+  FUNCTION fct(a) {
+    PRINT a;
+  }
+  CALL fct(2);
+  CALL fct(2+2);
+}
+$OUT
+2
+4
+$IN
+{
+  a = 5;
+  b = 7;
+  FUNCTION fct(x, y, z) {
+    PRINT x;
+	PRINT y;
+	PRINT z;
+	PRINT x + y + z;
+  }
+  CALL fct(1, 2, 3);
+  CALL fct(a, b, a);
+}
+$OUT
+1
+2
+3
+6
+5
+7
+5
+17
