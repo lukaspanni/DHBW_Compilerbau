@@ -1,21 +1,23 @@
 package compiler;
 
-import java.io.OutputStreamWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public abstract class Instr implements InstrIntf {
 
 	public static class PushNumberInstr implements InstrIntf {
 		int m_number;
-		
+
 		public PushNumberInstr(int number) {
-			m_number = number;
+			this.m_number = number;
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
-			env.pushNumber(m_number);
+			env.pushNumber(this.m_number);
 		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 		}
 
@@ -23,41 +25,46 @@ public abstract class Instr implements InstrIntf {
 
 	public static class VariableInstr implements InstrIntf {
 		String m_name;
-		
+
 		public VariableInstr(String name) {
-			m_name = name;
+			this.m_name = name;
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
-			Symbol symbol = env.getSymbol(m_name);
+			Symbol symbol = env.getSymbol(this.m_name);
 			env.pushNumber(symbol.m_number);
 		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 		}
 	}
 
 	public static class AssignInstr implements InstrIntf {
 		String m_name;
-		
+
 		public AssignInstr(String name) {
-			m_name = name;
+			this.m_name = name;
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
-			Symbol symbol = env.getSymbol(m_name);
+			Symbol symbol = env.getSymbol(this.m_name);
 			symbol.m_number = env.popNumber();
 		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 		}
 	}
 
 	public static class PrintInstr implements InstrIntf {
-		
+
 		public PrintInstr() {
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
 			try {
 				env.getOutputStream().write(String.valueOf(env.popNumber()) + "\n");
@@ -68,15 +75,17 @@ public abstract class Instr implements InstrIntf {
 			}
 		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 		}
 	}
 
 	public static class AddInstr implements InstrIntf {
-		
+
 		public AddInstr() {
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
 			int op1 = env.popNumber();
 			int op0 = env.popNumber();
@@ -84,15 +93,17 @@ public abstract class Instr implements InstrIntf {
 			env.pushNumber(result);
 		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 		}
 	}
 
 	public static class SubInstr implements InstrIntf {
-		
+
 		public SubInstr() {
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
 			int op1 = env.popNumber();
 			int op0 = env.popNumber();
@@ -100,21 +111,24 @@ public abstract class Instr implements InstrIntf {
 			env.pushNumber(result);
 		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 		}
 	}
 
 	public static class UnaryMinusInstr implements InstrIntf {
-		
+
 		public UnaryMinusInstr() {
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
 			int op0 = env.popNumber();
 			int result = -op0;
 			env.pushNumber(result);
 		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 		}
 	}
@@ -174,7 +188,7 @@ public abstract class Instr implements InstrIntf {
 			int op1 = env.popNumber();
 			int op0 = env.popNumber();
 
-			env.pushNumber((op1 / op0));
+			env.pushNumber((op0 / op1));
 		}
 
 		@Override
@@ -274,7 +288,7 @@ public abstract class Instr implements InstrIntf {
 		}
 
 	}
-	
+
 	public static class CompareGreaterInstr implements InstrIntf {
 
 		public CompareGreaterInstr() {
@@ -318,18 +332,20 @@ public abstract class Instr implements InstrIntf {
 	}
 
 
-	
+
 	public static class JumpInstr implements InstrIntf {
 		InstrBlock m_target;
-		
+
 		public JumpInstr(InstrBlock target) {
-			m_target = target;
+			this.m_target = target;
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
-			env.setInstrIter(m_target.getIterator());
+			env.setInstrIter(this.m_target.getIterator());
 		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 		}
 	}
@@ -337,34 +353,38 @@ public abstract class Instr implements InstrIntf {
 	public static class JumpCondInstr implements InstrIntf {
 		InstrBlock m_targetTrue;
 		InstrBlock m_targetFalse;
-		
+
 		public JumpCondInstr(InstrBlock targetTrue, InstrBlock targetFalse) {
-			m_targetTrue = targetTrue;
-			m_targetFalse = targetFalse;
+			this.m_targetTrue = targetTrue;
+			this.m_targetFalse = targetFalse;
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
-			int condition = env.popNumber();			
+			int condition = env.popNumber();
 			if (condition != 0) {
-				env.setInstrIter(m_targetTrue.getIterator());
+				env.setInstrIter(this.m_targetTrue.getIterator());
 			} else {
-				env.setInstrIter(m_targetFalse.getIterator());
+				env.setInstrIter(this.m_targetFalse.getIterator());
 			}
 		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 		}
 	}
 
 	static class InstrReturn extends Instr {
-		
+
 		InstrReturn() {
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
 			env.popFunction();
-		}		
+		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 			os.write("RETURN");
 			os.write("\n");
@@ -373,18 +393,20 @@ public abstract class Instr implements InstrIntf {
 
 	static class InstrPopPar extends Instr {
 		private Symbol m_symbol;
-		
+
 		InstrPopPar(Symbol symbol) {
-			m_symbol = symbol;
+			this.m_symbol = symbol;
 		}
 
+		@Override
 		public void execute(ExecutionEnvIntf env) {
-			m_symbol.m_number = env.popNumber();
-		}		
+			this.m_symbol.m_number = env.popNumber();
+		}
 
+		@Override
 		public void trace(OutputStreamWriter os) throws Exception {
 			os.write("PARAMETER: ");
-			os.write(m_symbol.m_name);
+			os.write(this.m_symbol.m_name);
 			os.write("\n");
 		}
 	}
@@ -399,7 +421,7 @@ public abstract class Instr implements InstrIntf {
 
 		@Override
 		public void execute(ExecutionEnvIntf env) {
-			env.pushFunction(function);
+			env.pushFunction(this.function);
 		}
 
 		@Override

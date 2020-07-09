@@ -1,5 +1,8 @@
 {
   PRINT 1 && 1;
   PRINT 1 || 1;
-  PRINT 0;
+  a = 10;
+  b = a;
+  PRINT 10 / 5;
+  PRINT b;
 }
